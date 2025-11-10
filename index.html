@@ -1,206 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>💖 My Weekly Skincare Tracker</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Weekly Skincare Tracker — Step-by-step</title>
   <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #ffe6f0, #e6f7ff, #f5e6ff);
-      margin: 0;
-      padding: 20px;
-      color: #333;
+    :root{
+      --accent:#ff66a3; --muted:#666;
+      --card:#fff; --radius:14px;
+      --bg1:#fff0f6; --bg2:#eef9ff;
     }
-
-    h1 {
-      text-align: center;
-      color: #ff66a3;
-      margin-bottom: 20px;
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2)); color:#222; padding:18px;
+      display:flex; justify-content:center;
     }
+    .wrap{width:100%;max-width:980px;background:var(--card);border-radius:var(--radius);
+      padding:18px; box-shadow:0 10px 30px rgba(0,0,0,0.07);}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    h1{margin:0;color:var(--accent);font-size:1.4rem}
+    .subtitle{margin:0;color:var(--muted);font-size:0.95rem}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th,td{padding:10px 12px;text-align:left;vertical-align:top}
+    th{background:#ffdfe9;color:#333;border-bottom:1px solid rgba(0,0,0,0.03)}
+    tr{border-bottom:1px solid rgba(0,0,0,0.04)}
+    tr:nth-child(even) td{background:#fff8fb}
+    .day{font-weight:700;color:var(--accent);width:110px}
+
+    /* stack of step items */
+    .steps{display:flex;flex-direction:column;gap:8px}
+    label.step{
+      display:flex;align-items:center;gap:8px;font-size:0.95rem;
+      background:transparent;padding:4px 6px;border-radius:8px;user-select:none;
     }
+    input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
 
-    th, td {
-      border-bottom: 1px solid #eee;
-      padding: 12px;
-      text-align: left;
+    .controls{display:flex;gap:10px;align-items:center}
+    button{border:0;padding:10px 14px;border-radius:999px;background:var(--accent);color:white;cursor:pointer}
+    .btn-outline{background:transparent;color:var(--accent);border:1px solid rgba(255,102,163,0.18)}
+    .note{font-size:0.9rem;color:var(--muted);margin-top:8px}
+
+    /* add-ons */
+    .addons{margin-top:18px;background:#fff;border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+    .addons table{width:100%;border-collapse:collapse}
+    .addons th{background:#ffdfe9}
+
+    @media(max-width:760px){
+      .day{width:72px}
+      th:nth-child(4), td:nth-child(4) {display:none} /* hide notes on small */
     }
-
-    th {
-      background-color: #ffccdd;
-      color: #444;
-    }
-
-    tr:nth-child(even) {
-      background-color: #fff8fb;
-    }
-
-    td label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #ff66a3;
-      cursor: pointer;
-    }
-
-    .reset-btn {
-      display: block;
-      margin: 20px auto;
-      background: #ff66a3;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(255,102,163,0.3);
-    }
-
-    .reset-btn:hover {
-      background: #ff4d94;
-    }
-
-    .section-title {
-      margin-top: 40px;
-      text-align: center;
-      color: #ff66a3;
-      font-size: 1.4rem;
-    }
-
-    .addons {
-      margin-top: 20px;
-      border-radius: 15px;
-      background: #fff;
-      padding: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .addons table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .addons th {
-      background: #ffccdd;
-    }
-
-    @media print {
-      .reset-btn { display: none; }
-      body { background: white; }
-      table { box-shadow: none; }
+    @media print{
+      button{display:none}
+      body{background:white}
+      .note{display:none}
     }
   </style>
 </head>
 <body>
-  <h1>💖 My Weekly Skincare Tracker</h1>
+  <div class="wrap" role="main">
+    <header>
+      <div>
+        <h1>💖 My Weekly Skincare Tracker</h1>
+        <p class="subtitle">Step-by-step checkboxes — morning & night. Auto-reset every Monday.</p>
+      </div>
+      <div class="controls" role="region" aria-label="controls">
+        <button id="printBtn" class="btn-outline" title="Print / Save">🖨 Print</button>
+        <button id="resetBtn" title="Reset Week">🔄 Reset Week</button>
+      </div>
+    </header>
 
-  <table id="tracker">
-    <tr>
-      <th>Day</th>
-      <th>🌞 Morning Routine</th>
-      <th>🌙 Night Routine</th>
-      <th>Notes</th>
-    </tr>
-    <tr>
-      <td>Monday</td>
-      <td><label><input type="checkbox" id="mon-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="mon-n"> 🧼 → 🌿 → 💦</label></td>
-      <td>Calm & repair skin</td>
-    </tr>
-    <tr>
-      <td>Tuesday</td>
-      <td><label><input type="checkbox" id="tue-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="tue-n"> 🧼 → 🌫 → 💦</label></td>
-      <td>Deep pore cleanse</td>
-    </tr>
-    <tr>
-      <td>Wednesday</td>
-      <td><label><input type="checkbox" id="wed-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="wed-n"> 🧼 → 🌼 → 💦</label></td>
-      <td>Glow & fade marks</td>
-    </tr>
-    <tr>
-      <td>Thursday</td>
-      <td><label><input type="checkbox" id="thu-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="thu-n"> 🧼 → 🌿 → 💦</label></td>
-      <td>Calm & balance</td>
-    </tr>
-    <tr>
-      <td>Friday</td>
-      <td><label><input type="checkbox" id="fri-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="fri-n"> 🧼 → 🌫 → 💦</label></td>
-      <td>Exfoliate pores</td>
-    </tr>
-    <tr>
-      <td>Saturday</td>
-      <td><label><input type="checkbox" id="sat-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="sat-n"> 🧼 → 🌼 → 💦</label></td>
-      <td>Brighten & even tone</td>
-    </tr>
-    <tr>
-      <td>Sunday</td>
-      <td><label><input type="checkbox" id="sun-m"> 🧼 → 💧 → 💦 → ☀</label></td>
-      <td><label><input type="checkbox" id="sun-n"> 🧼 → 💦</label></td>
-      <td>Skin rest day 💤</td>
-    </tr>
-  </table>
-
-  <button class="reset-btn" id="resetBtn">🔄 Reset Week</button>
-
-  <h2 class="section-title">🧴 Weekly Add-ons</h2>
-  <div class="addons">
-    <table>
-      <tr><th>Step</th><th>When</th><th>Purpose</th></tr>
-      <tr><td>🪶 Clay Mask</td><td>1–2× evening after cleansing</td><td>Deep clean & tighten pores</td></tr>
-      <tr><td>🧊 Ice massage</td><td>2–3× week (morning or evening)</td><td>Refresh & temporarily tighten pores</td></tr>
-      <tr><td>💧 Hydration</td><td>Daily (2.5–3 L water)</td><td>Keeps skin plump & glowing</td></tr>
+    <table aria-label="Weekly skincare tracker">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>🌞 Morning — Step by step</th>
+          <th>🌙 Night — Step by step</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="trackerBody">
+        <!-- rows injected by JS -->
+      </tbody>
     </table>
+
+    <p class="note">Tip: Use Print → Save as PDF on phone to save into gallery. Checks persist until next Monday or when you press Reset.</p>
+
+    <div class="addons" aria-labelledby="addonsTitle">
+      <h3 id="addonsTitle">🧴 Weekly Add-ons</h3>
+      <table>
+        <tr><th>Step</th><th>When</th><th>Purpose</th></tr>
+        <tr><td>🪶 Clay Mask</td><td>1–2× evening after cleansing</td><td>Deep clean & tighten pores</td></tr>
+        <tr><td>🧊 Ice massage</td><td>2–3× week (morning or evening)</td><td>Refresh & temporarily tighten pores</td></tr>
+        <tr><td>💧 Hydration</td><td>Daily (2.5–3 L water)</td><td>Keeps skin plump & glowing</td></tr>
+      </table>
+    </div>
   </div>
 
   <script>
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    const weekKey = "skincare_week";
+    // Configuration: days and step lists
+    const WEEK = [
+      { key: 'mon', name: 'Monday', notes: 'Calm & repair skin' },
+      { key: 'tue', name: 'Tuesday', notes: 'Deep pore cleanse' },
+      { key: 'wed', name: 'Wednesday', notes: 'Glow & fade marks' },
+      { key: 'thu', name: 'Thursday', notes: 'Calm & balance' },
+      { key: 'fri', name: 'Friday', notes: 'Exfoliate pores' },
+      { key: 'sat', name: 'Saturday', notes: 'Brighten & even tone' },
+      { key: 'sun', name: 'Sunday', notes: 'Skin rest day 💤' }
+    ];
 
-    // Load saved states
-    checkboxes.forEach(cb => {
-      const saved = localStorage.getItem(cb.id);
-      if (saved === "true") cb.checked = true;
+    const MORNING_STEPS = [
+      { id: 'facewash', label: 'Face wash (cleanse)' },
+      { id: 'niacinamide', label: 'Niacinamide serum' },
+      { id: 'moisturizer', label: 'Moisturizer' },
+      { id: 'spf', label: 'SPF 50' }
+    ];
 
-      cb.addEventListener("change", () => {
-        localStorage.setItem(cb.id, cb.checked);
-      });
-    });
+    const NIGHT_STEPS = [
+      // For nights we keep the specific step names; some nights serum may differ, but checkbox names are general
+      { id: 'facewash', label: 'Face wash (cleanse)' },
+      { id: 'serum', label: 'Serum (Tea Trica / Brightening / BHA nights)' },
+      { id: 'moisturizer', label: 'Moisturizer' }
+    ];
 
-    // Auto reset on Monday (first load)
-    const today = new Date();
-    const day = today.getDay(); // 0 = Sunday, 1 = Monday
-    const savedWeek = localStorage.getItem(weekKey);
+    const tbody = document.getElementById('trackerBody');
 
-    if (day === 1 && savedWeek !== String(today.getDate())) {
-      checkboxes.forEach(cb => localStorage.removeItem(cb.id));
-      localStorage.setItem(weekKey, String(today.getDate()));
-      location.reload();
+    // Auto-reset logic: reset saved week checks when a new Monday arrives.
+    // We'll store the "week marker" as the ISO week number of the year + year.
+    function getWeekMarker(date = new Date()){
+      // simple week of year calc (ISO week not strictly necessary here)
+      const start = new Date(date.getFullYear(),0,1);
+      const diff = Math.floor((date - start) / (24*60*60*1000));
+      const week = Math.floor((diff + start.getDay()) / 7);
+      return ${date.getFullYear()}-W${week};
     }
 
-    // Manual reset
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      if (confirm("Reset all checkboxes for this week?")) {
-        checkboxes.forEach(cb => {
-          cb.checked = false;
-          localStorage.removeItem(cb.id);
+    const WEEK_KEY = 'skincare_week_marker';
+    const currentWeekMarker = getWeekMarker();
+    const savedMarker = localStorage.getItem(WEEK_KEY);
+    if (!savedMarker) localStorage.setItem(WEEK_KEY, currentWeekMarker);
+    if (savedMarker && savedMarker !== currentWeekMarker) {
+      // new week started — clear only our keys
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('wk_')) localStorage.removeItem(k);
+      });
+      localStorage.setItem(WEEK_KEY, currentWeekMarker);
+    }
+
+    // Build the table rows
+    WEEK.forEach(day => {
+      const tr = document.createElement('tr');
+
+      // Day cell
+      const dayTd = document.createElement('td');
+      dayTd.className = 'day';
+      dayTd.textContent = day.name;
+      tr.appendChild(dayTd);
+
+      // Morning steps column
+      const mTd = document.createElement('td');
+      const mStack = document.createElement('div');
+      mStack.className = 'steps';
+      MORNING_STEPS.forEach((step, idx) => {
+        const key = wk_${day.key}_m_${step.id};
+        const label = document.createElement('label');
+        label.className = 'step';
+        label.setAttribute('for', key);
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = key;
+        cb.checked = localStorage.getItem(key) === 'true';
+        cb.addEventListener('change', () => {
+          localStorage.setItem(key, cb.checked);
+        });
+
+        const span = document.createElement('span');
+        span.textContent = step.label;
+        label.appendChild(cb);
+        label.appendChild(span);
+        mStack.appendChild(label);
+      });
+      mTd.appendChild(mStack);
+      tr.appendChild(mTd);
+
+      // Night steps column
+      const nTd = document.createElement('td');
+      const nStack = document.createElement('div');
+      nStack.className = 'steps';
+      NIGHT_STEPS.forEach((step, idx) => {
+        const key = wk_${day.key}_n_${step.id};
+        const label = document.createElement('label');
+        label.className = 'step';
+        label.setAttribute('for', key);
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = key;
+        cb.checked = localStorage.getItem(key) === 'true';
+        cb.addEventListener('change', () => {
+          localStorage.setItem(key, cb.checked);
+        });
+
+        const span = document.createElement('span');
+        span.textContent = step.label;
+        label.appendChild(cb);
+        label.appendChild(span);
+        nStack.appendChild(label);
+      });
+      nTd.appendChild(nStack);
+      tr.appendChild(nTd);
+
+      // Notes
+      const notesTd = document.createElement('td');
+      notesTd.textContent = day.notes;
+      tr.appendChild(notesTd);
+
+      tbody.appendChild(tr);
+    });
+
+    // Manual reset: clear wk_ keys for this week
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Reset all checkboxes for this week?')) return;
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('wk_')) localStorage.removeItem(k);
+      });
+      // uncheck visually
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    });
+
+    // Print button
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    // Accessibility: pressing space/enter on a label toggles the checkbox (labels are clickable already)
+    // Keep localStorage in sync if changed in another tab
+    window.addEventListener('storage', (e) => {
+      if (!e.key) return;
+      if (e.key.startsWith('wk_') || e.key === WEEK_KEY) {
+        // reload checkbox states from storage
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.checked = localStorage.getItem(cb.id) === 'true';
         });
       }
     });
